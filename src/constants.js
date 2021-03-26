@@ -66,11 +66,15 @@ module.exports = exports = {
     icebox: 'https://preview.redd.it/sc2cvp60ukr51.jpg?width=3000&format=pjpg&auto=webp&s=efddb43399d680842e1ec85a7a87a174abf048f6'
   },
 
-  GAME_MODES: ['standard', 'spike rush', 'deathmatch'],
+  GAME_MODES: ['standard', 'spike rush', 'deathmatch', 'escalation', 'elo'],
 
   AFFIRMATIVE_WORDS: ['yes', 'yeah', 'yea', 'ye', 'yah', 'sure', 'true', '1', 'one', 'on', 'si', 'ok', 'okay', 'k', 'mhm', 'why not', 'alright', 'aight', 'affirmative', 'yeet'],
 
   MAX_TEAM_COUNT: 5, // maximum amount of players allowed on one team
+
+  ELO_MATCH_WIN: 100, // how many points players gain upon winning
+
+  ELO_MATCH_LOSS: -80, // how many points players lose upon losing
 
   userRegistrationSteps: [
     ['1. Valorant Username', 'What is your FULL Valorant username? (including tag, e.g. `Username#NA1`)'],
@@ -86,7 +90,8 @@ module.exports = exports = {
       ['4. Player Count', `How many players should be on each team? Max ${this.MAX_TEAM_COUNT}.`],
       ['5. Spectators', 'Are spectators allowed?'],
       ['6. Map', `Which map would you like to play on? Options are "${this.MAPS.map(m => this.capitalizeFirstLetter(m)).join('", "')}". If any, type "any".`],
-      ['7. Game Mode', `What game mode would you like? Options are "${this.GAME_MODES.map(m => this.capitalizeFirstLetter(m)).join('", "')}".`]
+      ['7. Game Mode', `What game mode would you like? Options are "${this.GAME_MODES.map(m => this.capitalizeFirstLetter(m)).join('", "')}".`],
+      ['8. Team Captains', 'Would you like to use team captains to select the players for each team instead of players deciding their own team?']
     ]
   },
 
