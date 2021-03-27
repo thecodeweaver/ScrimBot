@@ -236,6 +236,19 @@ const score = async (message, GLOBALS) => {
     }
   })
 
+  const [teamAScore, teamBScore] = matchScore.split('-').map(n => parseInt(n) || 0)
+
+  if (matchInformation.mode === 'elo') {
+    const updateQuery = { $inc: {} }
+    matchInformation.players.a.forEach(p => {
+      updateQuery.$inc['elo.' + p] = (teamAScore > teamBScore ? CONSTANTS.ELO_MATCH_WIN : CONSTANTS.ELO_MATCH_LOSS) || 0
+    })
+    matchInformation.players.b.forEach(p => {
+      updateQuery.$inc['elo.' + p] = (teamBScore > teamAScore ? CONSTANTS.ELO_MATCH_WIN : CONSTANTS.ELO_MATCH_LOSS) || 0
+    })
+    await GLOBALS.mongoDb.collection('guilds').updateOne({ _id: message.guild.id }, updateQuery)
+  }
+
   const embed = new GLOBALS.Embed()
     .setTitle('Match Completed')
     .setDescription('Match with ID `' + matchID + '` has been completed. Thanks for using ScrimBot, to create a new match type `v!match create`')
@@ -253,7 +266,7 @@ const score = async (message, GLOBALS) => {
   botMessage.edit('The match has completed!', botMessageEmbed)
   if (message.guild.me.hasPermission('MANAGE_MESSAGES')) botMessage.reactions.removeAll()
 
-  await GLOBALS.mongoDb.collection('users').updateMany({ $in: { _id: [...matchInformation.players.a, ...matchInformation.players.b, ...(matchInformation.spectators || [])] } }, {
+  await GLOBALS.mongoDb.collection('users').updateMany({ _id: { $in: [...matchInformation.players.a, ...matchInformation.players.b, ...(matchInformation.spectators || [])] } }, {
     $push: {
       matches: {
         $each: [matchID],
